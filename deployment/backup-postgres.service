@@ -1,0 +1,11 @@
+[Unit]
+Description=Create and verify a CHSMS PostgreSQL backup
+After=docker.service
+Requires=docker.service
+
+[Service]
+Type=oneshot
+Environment=APP_DIR=/opt/chsms
+Environment=BACKUP_DIR=/var/backups/chsms
+Environment=RETENTION_DAYS=30
+ExecStart=/bin/bash /opt/chsms/deployment/backup-postgres.sh

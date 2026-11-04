@@ -1,0 +1,9 @@
+[Unit]
+Description=Renew CHSMS HTTPS and MQTT TLS certificates
+After=docker.service
+Requires=docker.service
+
+[Service]
+Type=oneshot
+Environment=APP_DIR=/opt/chsms
+ExecStart=/bin/bash /opt/chsms/deployment/certbot-renew.sh

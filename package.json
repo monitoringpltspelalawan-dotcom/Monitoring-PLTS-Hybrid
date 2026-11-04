@@ -1,0 +1,56 @@
+{
+  "name": "chsms-centralized-hybrid-solar-monitoring",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Centralized Hybrid Solar PV Monitoring & Energy Management Platform (multi-site SCADA)",
+  "type": "module",
+  "engines": {
+    "node": ">=22.5"
+  },
+  "scripts": {
+    "dev": "concurrently -k -n API,WEB -c cyan,magenta \"npm:dev:api\" \"npm:dev:web\"",
+    "dev:api": "node server/index.js",
+    "dev:web": "vite --config web/vite.config.ts",
+    "build": "vite build --config web/vite.config.ts",
+    "start": "node server/index.js",
+    "seed": "node server/db/seed.js",
+    "seed:reset": "node server/db/seed.js --reset",
+    "provision:admin": "node server/db/create-admin.js",
+    "mqtt:broker": "node server/mqtt/broker.js",
+    "gateway": "node gateway/agent.js",
+    "gateway:virtual": "node gateway/virtual-device.js",
+    "test": "node --test --test-reporter=spec \"tests/*.test.js\"",
+    "postinstall": "node -e \"console.log('CHSMS ready. Run: npm run seed && npm run dev')\""
+  },
+  "dependencies": {
+    "aedes": "^0.51.3",
+    "compression": "^1.7.5",
+    "cookie-parser": "^1.4.7",
+    "dotenv": "^16.4.7",
+    "exceljs": "^4.4.0",
+    "express": "^4.21.2",
+    "mqtt": "^5.10.3",
+    "pdfkit": "^0.15.2",
+    "pg": "^8.13.1",
+    "selfsigned": "^2.4.1",
+    "ws": "^8.18.0"
+  },
+  "devDependencies": {
+    "@types/d3-geo": "^3.1.0",
+    "@types/react": "^18.3.18",
+    "@types/react-dom": "^18.3.5",
+    "@types/topojson-client": "^3.1.5",
+    "@vitejs/plugin-react": "^4.3.4",
+    "concurrently": "^9.1.2",
+    "d3-geo": "^3.1.1",
+    "lucide-react": "^0.469.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.28.1",
+    "recharts": "^2.15.0",
+    "topojson-client": "^3.1.0",
+    "typescript": "^5.7.2",
+    "vite": "^6.0.7",
+    "world-atlas": "^2.0.2"
+  }
+}

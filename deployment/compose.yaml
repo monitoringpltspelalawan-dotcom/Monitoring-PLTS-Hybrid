@@ -1,0 +1,129 @@
+services:
+  db:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: chsms
+      POSTGRES_USER: chsms
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}
+      PGDATA: /var/lib/postgresql/data/pgdata
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - backend
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U \"$${POSTGRES_USER}\" -d \"$${POSTGRES_DB}\""]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 20s
+    logging: &default-logging
+      driver: json-file
+      options:
+        max-size: 20m
+        max-file: "5"
+
+  app:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+    image: chsms-app:${APP_VERSION:-local}
+    restart: unless-stopped
+    init: true
+    read_only: true
+    tmpfs:
+      - /tmp:size=64m,mode=1777
+    group_add:
+      - "1000"
+    environment:
+      NODE_ENV: production
+      HOST: 0.0.0.0
+      PORT: 8080
+      DATA_DIR: /app/data
+      DATABASE_URL: postgresql://chsms:${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}@db:5432/chsms?sslmode=disable
+      DATABASE_POOL_MAX: 20
+      DATABASE_CONNECTION_TIMEOUT_MS: 5000
+      DEMO_MODE: "false"
+      SEED_ON_START: "false"
+      SESSION_SECRET: ${SESSION_SECRET:?Set SESSION_SECRET in .env}
+      SESSION_TTL_HOURS: 12
+      TLS_ENABLED: "true"
+      MQTT_EMBEDDED: "true"
+      MQTT_PORT: 1883
+      MQTT_TLS_PORT: 8883
+      MQTT_URL: ${MQTT_URL:?Set MQTT_URL in .env}
+      TLS_CERT: /run/secrets/mqtt_tls_fullchain.pem
+      TLS_KEY: /run/secrets/mqtt_tls_privkey.pem
+      RETENTION_MEASUREMENT_DAYS: 30
+      RETENTION_INGEST_DAYS: 7
+      RETENTION_AUDIT_DAYS: 365
+    expose:
+      - "8080"
+    ports:
+      - "${MQTT_BIND_IP:-0.0.0.0}:8883:8883"
+    volumes:
+      - app_data:/app/data
+    secrets:
+      - source: tls_fullchain
+        target: mqtt_tls_fullchain.pem
+      - source: tls_privkey
+        target: mqtt_tls_privkey.pem
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - backend
+      - proxy
+    healthcheck:
+      test:
+        - CMD
+        - node
+        - -e
+        - "fetch('http://127.0.0.1:8080/api/system/health').then(async r=>{const b=await r.json();process.exit(r.ok&&b.status==='ok'&&b.database.ok&&b.mqtt.running?0:1)}).catch(()=>process.exit(1))"
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 60s
+    logging: *default-logging
+
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    init: true
+    group_add:
+      - "1000"
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    secrets:
+      - source: tls_fullchain
+        target: tls_fullchain.pem
+      - source: tls_privkey
+        target: tls_privkey.pem
+    depends_on:
+      app:
+        condition: service_healthy
+    networks:
+      - proxy
+    logging: *default-logging
+
+volumes:
+  postgres_data:
+  app_data:
+  caddy_data:
+  caddy_config:
+
+secrets:
+  tls_fullchain:
+    file: ${TLS_CERT_HOST:?Set TLS_CERT_HOST in .env}
+  tls_privkey:
+    file: ${TLS_KEY_HOST:?Set TLS_KEY_HOST in .env}
+
+networks:
+  backend:
+    internal: true
+  proxy:

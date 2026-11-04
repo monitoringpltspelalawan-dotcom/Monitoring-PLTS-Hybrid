@@ -1,0 +1,38 @@
+{
+  "gatewayId": "REPLACE-ME-WITH-PROVISIONED-GATEWAY-ID",
+  "siteId": "REPLACE-ME-WITH-PROVISIONED-SITE-ID",
+  "token": "REPLACE-ME-WITH-ONE-TIME-GATEWAY-TOKEN",
+  "transport": {
+    "type": "https",
+    "url": "https://monitoring.example.com"
+  },
+  "pollIntervalMs": 5000,
+  "heartbeatIntervalMs": 30000,
+  "timeoutMs": 3000,
+  "retries": 1,
+  "outboxFile": "./data/outbox.json",
+  "devices": [
+    {
+      "id": "REPLACE-ME-WITH-REGISTERED-DEVICE-ID",
+      "ipAddress": "192.168.10.20",
+      "port": 502,
+      "unitId": 1,
+      "registers": [
+        {
+          "parameterId": "pv_power_kw",
+          "name": "PV power",
+          "functionCode": 3,
+          "address": 0,
+          "dataType": "FLOAT32",
+          "wordOrder": "BIG",
+          "byteOrder": "BIG",
+          "scale": 1,
+          "offset": 0,
+          "unit": "kW",
+          "pollIntervalSec": 5,
+          "writable": false
+        }
+      ]
+    }
+  ]
+}

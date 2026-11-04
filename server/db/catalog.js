@@ -1,0 +1,327 @@
+/** Seed catalogue: regions, 22 plant sites, device models + Modbus templates, alarm rules. */
+
+export const REGIONS = [
+  { code: 'REG-JB', name: 'West Java', timezone: 'Asia/Jakarta' },
+  { code: 'REG-DKI', name: 'DKI Jakarta', timezone: 'Asia/Jakarta' },
+  { code: 'REG-BTN', name: 'Banten', timezone: 'Asia/Jakarta' },
+  { code: 'REG-JTG', name: 'Central Java & DIY', timezone: 'Asia/Jakarta' },
+  { code: 'REG-JTM', name: 'East Java', timezone: 'Asia/Jakarta' },
+  { code: 'REG-BALI', name: 'Bali & Nusa Tenggara', timezone: 'Asia/Makassar' },
+  { code: 'REG-SUM', name: 'Sumatera', timezone: 'Asia/Jakarta' },
+  { code: 'REG-KAL', name: 'Kalimantan', timezone: 'Asia/Makassar' },
+  { code: 'REG-SUL', name: 'Sulawesi', timezone: 'Asia/Makassar' },
+  { code: 'REG-PAP', name: 'Papua & Maluku', timezone: 'Asia/Jayapura' },
+];
+
+/**
+ * 22 sites, 4.07 MWp PV / ~6.9 MWh BESS portfolio.
+ * sim: { loadBaseKw, loadPeakKw, cloudiness, gridReliability, shifts, commIssue, status }
+ */
+export const SITE_SEEDS = [
+  {
+    code: 'PLTS-CJK-01', name: 'PLTS Hybrid Cikarang', region: 'REG-JB', location: 'Cikarang Industrial Park, West Java',
+    address: 'Jl. Industri Selatan IV, Cikarang, Bekasi Regency', lat: -6.284, lon: 107.146, tz: 'Asia/Jakarta',
+    kwp: 320, bessKwh: 600, bessPowerKw: 150, inverters: 4, racks: 6, genKw: 250, genCount: 1,
+    gridType: '20 kV MV', gridKva: 630, commissioning: '2023-06-18', status: 'ONLINE',
+    loadBaseKw: 70, loadPeakKw: 285, cloudiness: 0.26, gridReliability: 0.995, shifts: 'industrial', comm: 'ONLINE',
+  },
+  {
+    code: 'PLTS-KRW-01', name: 'PLTS Hybrid Karawang', region: 'REG-JB', location: 'Karawang Industrial Estate, West Java',
+    address: 'Jl. Permata Raya Lot C5, Karawang', lat: -6.322, lon: 107.337, tz: 'Asia/Jakarta',
+    kwp: 280, bessKwh: 500, bessPowerKw: 125, inverters: 3, racks: 5, genKw: 200, genCount: 1,
+    gridType: '20 kV MV', gridKva: 530, commissioning: '2023-09-02', status: 'ONLINE',
+    loadBaseKw: 65, loadPeakKw: 250, cloudiness: 0.29, gridReliability: 0.994, shifts: 'industrial', comm: 'ONLINE',
+  },
+  {
+    code: 'PLTS-BKS-01', name: 'PLTS Hybrid Bekasi Timur', region: 'REG-JB', location: 'Bekasi, West Java',
+    address: 'Jl. Raya Bekasi KM 27, Bekasi', lat: -6.238, lon: 106.975, tz: 'Asia/Jakarta',
+    kwp: 240, bessKwh: 400, bessPowerKw: 100, inverters: 3, racks: 4, genKw: 150, genCount: 1,
+    gridType: '20 kV MV', gridKva: 400, commissioning: '2022-11-14', status: 'WARNING',
+    loadBaseKw: 55, loadPeakKw: 220, cloudiness: 0.33, gridReliability: 0.988, shifts: 'industrial', comm: 'ONLINE',
+  },
+  {
+    code: 'PLTS-SRG-01', name: 'PLTS Hybrid Serang', region: 'REG-BTN', location: 'Serang, Banten',
+    address: 'Kawasan Industri Modern Cikande, Serang', lat: -6.11, lon: 106.15, tz: 'Asia/Jakarta',
+    kwp: 180, bessKwh: 300, bessPowerKw: 75, inverters: 2, racks: 3, genKw: 100, genCount: 1,
+    gridType: '20 kV MV', gridKva: 315, commissioning: '2022-07-21', status: 'ONLINE',
+    loadBaseKw: 42, loadPeakKw: 168, cloudiness: 0.31, gridReliability: 0.992, shifts: 'industrial', comm: 'ONLINE',
+  },
+  {
+    code: 'PLTS-TNG-01', name: 'PLTS Hybrid Tangerang', region: 'REG-BTN', location: 'Tangerang, Banten',
+    address: 'Jl. Raya Serpong KM 8, Tangerang Selatan', lat: -6.178, lon: 106.63, tz: 'Asia/Jakarta',
+    kwp: 200, bessKwh: 350, bessPowerKw: 90, inverters: 2, racks: 4, genKw: 150, genCount: 1,
+    gridType: '20 kV MV', gridKva: 400, commissioning: '2023-02-09', status: 'ONLINE',
+    loadBaseKw: 48, loadPeakKw: 185, cloudiness: 0.34, gridReliability: 0.991, shifts: 'commercial', comm: 'ONLINE',
+  },
+  {
+    code: 'PLTS-BDO-01', name: 'PLTS Hybrid Bandung', region: 'REG-JB', location: 'Bandung, West Java',
+    address: 'Jl. Soekarno Hatta 590, Bandung', lat: -6.917, lon: 107.619, tz: 'Asia/Jakarta',
+    kwp: 150, bessKwh: 250, bessPowerKw: 60, inverters: 2, racks: 3, genKw: 0, genCount: 0,
+    gridType: '20 kV MV', gridKva: 250, commissioning: '2023-04-27', status: 'MAINTENANCE',
+    loadBaseKw: 35, loadPeakKw: 140, cloudiness: 0.42, gridReliability: 0.997, shifts: 'commercial', comm: 'ONLINE',
+  },
+  {
+    code: 'PLTS-SMG-01', name: 'PLTS Hybrid Semarang', region: 'REG-JTG', location: 'Semarang, Central Java',
+    address: 'Kawasan Industri Wijayakusuma, Semarang', lat: -7.005, lon: 110.438, tz: 'Asia/Jakarta',
+    kwp: 220, bessKwh: 380, bessPowerKw: 95, inverters: 3, racks: 4, genKw: 150, genCount: 1,
+    gridType: '20 kV MV', gridKva: 400, commissioning: '2022-12-05', status: 'ONLINE',
+    loadBaseKw: 52, loadPeakKw: 205, cloudiness: 0.35, gridReliability: 0.993, shifts: 'industrial', comm: 'ONLINE',
+  },
+  {
+    code: 'PLTS-SBY-01', name: 'PLTS Hybrid Surabaya', region: 'REG-JTM', location: 'Rungkut Industrial Estate, East Java',
+    address: 'Jl. Rungkut Industri III, Surabaya', lat: -7.257, lon: 112.752, tz: 'Asia/Jakarta',
+    kwp: 300, bessKwh: 500, bessPowerKw: 130, inverters: 4, racks: 5, genKw: 250, genCount: 1,
+    gridType: '20 kV MV', gridKva: 630, commissioning: '2023-01-16', status: 'ONLINE',
+    loadBaseKw: 68, loadPeakKw: 275, cloudiness: 0.3, gridReliability: 0.996, shifts: 'industrial', comm: 'ONLINE',
+  },
+  {
+    code: 'PLTS-SDA-01', name: 'PLTS Hybrid Sidoarjo', region: 'REG-JTM', location: 'Sidoarjo, East Java',
+    address: 'Jl. Raya Jenggolo, Sidoarjo', lat: -7.447, lon: 112.718, tz: 'Asia/Jakarta',
+    kwp: 180, bessKwh: 300, bessPowerKw: 75, inverters: 2, racks: 3, genKw: 100, genCount: 1,
+    gridType: '20 kV MV', gridKva: 315, commissioning: '2022-08-30', status: 'WARNING',
+    loadBaseKw: 44, loadPeakKw: 170, cloudiness: 0.32, gridReliability: 0.985, shifts: 'industrial', comm: 'ONLINE',
+  },
+  {
+    code: 'PLTS-MLG-01', name: 'PLTS Hybrid Malang', region: 'REG-JTM', location: 'Malang, East Java',
+    address: 'Jl. Raya Tlogomas 48, Malang', lat: -7.966, lon: 112.632, tz: 'Asia/Jakarta',
+    kwp: 160, bessKwh: 260, bessPowerKw: 65, inverters: 2, racks: 3, genKw: 0, genCount: 0,
+    gridType: '20 kV MV', gridKva: 250, commissioning: '2023-03-11', status: 'ONLINE',
+    loadBaseKw: 38, loadPeakKw: 150, cloudiness: 0.4, gridReliability: 0.997, shifts: 'commercial', comm: 'ONLINE',
+  },
+  {
+    code: 'PLTS-DPS-01', name: 'PLTS Hybrid Denpasar', region: 'REG-BALI', location: 'Denpasar, Bali',
+    address: 'Jl. By Pass Ngurah Rai 88, Denpasar', lat: -8.65, lon: 115.216, tz: 'Asia/Makassar',
+    kwp: 120, bessKwh: 200, bessPowerKw: 50, inverters: 2, racks: 2, genKw: 100, genCount: 1,
+    gridType: '20 kV MV', gridKva: 250, commissioning: '2023-05-22', status: 'ONLINE',
+    loadBaseKw: 30, loadPeakKw: 112, cloudiness: 0.33, gridReliability: 0.995, shifts: 'commercial', comm: 'ONLINE',
+  },
+  {
+    code: 'PLTS-MTR-01', name: 'PLTS Hybrid Mataram', region: 'REG-BALI', location: 'Mataram, Lombok',
+    address: 'Jl. Raya Mataram-Sikur, Mataram', lat: -8.583, lon: 116.116, tz: 'Asia/Makassar',
+    kwp: 100, bessKwh: 180, bessPowerKw: 45, inverters: 2, racks: 2, genKw: 80, genCount: 1,
+    gridType: '20 kV MV', gridKva: 200, commissioning: '2022-10-08', status: 'ONLINE',
+    loadBaseKw: 26, loadPeakKw: 95, cloudiness: 0.36, gridReliability: 0.978, shifts: 'commercial', comm: 'DEGRADED',
+  },
+  {
+    code: 'PLTS-MDN-01', name: 'PLTS Hybrid Medan', region: 'REG-SUM', location: 'Medan Industrial Estate, North Sumatera',
+    address: 'Jl. Pulau Batam, Kawasan Industri Medan', lat: 3.595, lon: 98.672, tz: 'Asia/Jakarta',
+    kwp: 260, bessKwh: 420, bessPowerKw: 105, inverters: 3, racks: 4, genKw: 200, genCount: 1,
+    gridType: '20 kV MV', gridKva: 530, commissioning: '2022-09-19', status: 'CRITICAL',
+    loadBaseKw: 60, loadPeakKw: 235, cloudiness: 0.44, gridReliability: 0.94, shifts: 'industrial', comm: 'ONLINE',
+  },
+  {
+    code: 'PLTS-PKU-01', name: 'PLTS Hybrid Pekanbaru', region: 'REG-SUM', location: 'Pekanbaru, Riau',
+    address: 'Jl. Raya Pekanbaru-Bangkinang KM 18', lat: 0.507, lon: 101.447, tz: 'Asia/Jakarta',
+    kwp: 140, bessKwh: 240, bessPowerKw: 60, inverters: 2, racks: 3, genKw: 100, genCount: 1,
+    gridType: '20 kV MV', gridKva: 250, commissioning: '2023-07-03', status: 'ONLINE',
+    loadBaseKw: 33, loadPeakKw: 130, cloudiness: 0.47, gridReliability: 0.986, shifts: 'industrial', comm: 'ONLINE',
+  },
+  {
+    code: 'PLTS-PLM-01', name: 'PLTS Hybrid Palembang', region: 'REG-SUM', location: 'Palembang, South Sumatera',
+    address: 'Jl. Soekarno Hatta, Palembang', lat: -2.976, lon: 104.775, tz: 'Asia/Jakarta',
+    kwp: 200, bessKwh: 320, bessPowerKw: 80, inverters: 3, racks: 4, genKw: 150, genCount: 1,
+    gridType: '20 kV MV', gridKva: 400, commissioning: '2022-06-28', status: 'ONLINE',
+    loadBaseKw: 47, loadPeakKw: 188, cloudiness: 0.39, gridReliability: 0.99, shifts: 'industrial', comm: 'ONLINE',
+  },
+  {
+    code: 'PLTS-LPG-01', name: 'PLTS Hybrid Lampung', region: 'REG-SUM', location: 'Bandar Lampung, Lampung',
+    address: 'Jl. Soekarno Hatta KM 9, Bandar Lampung', lat: -5.397, lon: 105.267, tz: 'Asia/Jakarta',
+    kwp: 150, bessKwh: 240, bessPowerKw: 60, inverters: 2, racks: 3, genKw: 100, genCount: 1,
+    gridType: '20 kV MV', gridKva: 250, commissioning: '2023-08-14', status: 'OFFLINE',
+    loadBaseKw: 36, loadPeakKw: 140, cloudiness: 0.4, gridReliability: 0.982, shifts: 'industrial', comm: 'OFFLINE',
+  },
+  {
+    code: 'PLTS-BPN-01', name: 'PLTS Hybrid Balikpapan', region: 'REG-KAL', location: 'Balikpapan, East Kalimantan',
+    address: 'Kawasan Industri Kariangau, Balikpapan', lat: -1.237, lon: 116.852, tz: 'Asia/Makassar',
+    kwp: 180, bessKwh: 300, bessPowerKw: 75, inverters: 2, racks: 3, genKw: 150, genCount: 1,
+    gridType: '20 kV MV', gridKva: 315, commissioning: '2023-02-27', status: 'ONLINE',
+    loadBaseKw: 43, loadPeakKw: 168, cloudiness: 0.35, gridReliability: 0.984, shifts: 'industrial', comm: 'ONLINE',
+  },
+  {
+    code: 'PLTS-SMD-01', name: 'PLTS Hybrid Samarinda', region: 'REG-KAL', location: 'Samarinda, East Kalimantan',
+    address: 'Jl. Sultan Alimuddin, Samarinda', lat: -0.502, lon: 117.153, tz: 'Asia/Makassar',
+    kwp: 120, bessKwh: 200, bessPowerKw: 50, inverters: 2, racks: 2, genKw: 80, genCount: 1,
+    gridType: '20 kV MV', gridKva: 200, commissioning: '2022-08-05', status: 'WARNING',
+    loadBaseKw: 30, loadPeakKw: 112, cloudiness: 0.46, gridReliability: 0.965, shifts: 'commercial', comm: 'ONLINE',
+  },
+  {
+    code: 'PLTS-MKS-01', name: 'PLTS Hybrid Makassar', region: 'REG-SUL', location: 'Makassar Industrial Estate, South Sulawesi',
+    address: 'Jl. Perintis Kemerdekaan KM 15, Makassar', lat: -5.147, lon: 119.432, tz: 'Asia/Makassar',
+    kwp: 220, bessKwh: 360, bessPowerKw: 90, inverters: 3, racks: 4, genKw: 150, genCount: 1,
+    gridType: '20 kV MV', gridKva: 400, commissioning: '2023-04-12', status: 'ONLINE',
+    loadBaseKw: 51, loadPeakKw: 205, cloudiness: 0.3, gridReliability: 0.992, shifts: 'industrial', comm: 'ONLINE',
+  },
+  {
+    code: 'PLTS-MND-01', name: 'PLTS Hybrid Manado', region: 'REG-SUL', location: 'Manado, North Sulawesi',
+    address: 'Jl. Ring Road III, Manado', lat: 1.474, lon: 124.842, tz: 'Asia/Makassar',
+    kwp: 100, bessKwh: 160, bessPowerKw: 40, inverters: 2, racks: 2, genKw: 80, genCount: 1,
+    gridType: '20 kV MV', gridKva: 200, commissioning: '2022-12-20', status: 'ONLINE',
+    loadBaseKw: 25, loadPeakKw: 95, cloudiness: 0.38, gridReliability: 0.981, shifts: 'commercial', comm: 'ONLINE',
+  },
+  {
+    code: 'PLTS-BTM-01', name: 'PLTS Hybrid Batam', region: 'REG-SUM', location: 'Batamindo Industrial Park, Riau Islands',
+    address: 'Jl. Rasamala, Batam', lat: 1.13, lon: 104.05, tz: 'Asia/Jakarta',
+    kwp: 160, bessKwh: 280, bessPowerKw: 70, inverters: 2, racks: 3, genKw: 100, genCount: 1,
+    gridType: '20 kV MV', gridKva: 315, commissioning: '2023-06-01', status: 'OFFLINE',
+    loadBaseKw: 39, loadPeakKw: 150, cloudiness: 0.36, gridReliability: 0.99, shifts: 'industrial', comm: 'OFFLINE',
+  },
+  {
+    code: 'PLTS-JAP-01', name: 'PLTS Hybrid Jayapura', region: 'REG-PAP', location: 'Jayapura, Papua',
+    address: 'Jl. Raya Abepura, Jayapura', lat: -2.533, lon: 140.717, tz: 'Asia/Jayapura',
+    kwp: 90, bessKwh: 150, bessPowerKw: 38, inverters: 1, racks: 2, genKw: 60, genCount: 1,
+    gridType: '20 kV MV', gridKva: 200, commissioning: '2023-09-25', status: 'ONLINE',
+    loadBaseKw: 22, loadPeakKw: 86, cloudiness: 0.41, gridReliability: 0.972, shifts: 'commercial', comm: 'DEGRADED',
+  },
+];
+
+/* ------------------------------------------------------------------ */
+/* Device models + register templates                                  */
+/* ------------------------------------------------------------------ */
+
+const reg = (parameter_id, name, address, data_type, scale, unit, extra = {}) => ({
+  parameter_id,
+  name,
+  function_code: extra.fc ?? 3,
+  address,
+  register_type: extra.fc === 1 ? 'COIL' : extra.fc === 2 ? 'DISCRETE_INPUT' : extra.fc === 4 ? 'INPUT' : 'HOLDING',
+  data_type,
+  word_order: extra.word ?? 'BIG',
+  byte_order: extra.byte ?? 'BIG',
+  scale,
+  offset: extra.offset ?? 0,
+  unit,
+  poll_interval_sec: extra.poll ?? 10,
+  writable: extra.writable ? 1 : 0,
+  description: extra.desc ?? `${name} (template — verify against manufacturer documentation)`,
+});
+
+const inverterRegs = (base, byte = 'BIG') => [
+  reg('status_code', 'Operating Status', base, 'UINT16', 1, 'code'),
+  reg('fault_code', 'Fault Code', base + 1, 'UINT32', 1, 'code'),
+  reg('pv_voltage_v', 'PV DC Voltage', base + 10, 'UINT16', 0.1, 'V'),
+  reg('pv_current_a', 'PV DC Current', base + 11, 'INT16', 0.1, 'A'),
+  reg('pv_power_kw', 'PV Input Power', base + 20, 'UINT32', 0.001, 'kW'),
+  reg('mppt1_power_kw', 'MPPT 1 Power', base + 22, 'UINT32', 0.001, 'kW'),
+  reg('mppt2_power_kw', 'MPPT 2 Power', base + 24, 'UINT32', 0.001, 'kW'),
+  reg('ac_voltage_l1_v', 'AC Voltage L1', base + 30, 'UINT16', 0.1, 'V'),
+  reg('ac_voltage_l2_v', 'AC Voltage L2', base + 31, 'UINT16', 0.1, 'V'),
+  reg('ac_voltage_l3_v', 'AC Voltage L3', base + 32, 'UINT16', 0.1, 'V'),
+  reg('ac_current_l1_a', 'AC Current L1', base + 33, 'UINT16', 0.1, 'A'),
+  reg('ac_current_l2_a', 'AC Current L2', base + 34, 'UINT16', 0.1, 'A'),
+  reg('ac_current_l3_a', 'AC Current L3', base + 35, 'UINT16', 0.1, 'A'),
+  reg('frequency_hz', 'Grid Frequency', base + 36, 'UINT16', 0.01, 'Hz'),
+  reg('active_power_kw', 'Active Power', base + 37, 'INT32', 0.001, 'kW', { byte }),
+  reg('reactive_power_kvar', 'Reactive Power', base + 39, 'INT32', 0.001, 'kvar', { byte }),
+  reg('power_factor', 'Power Factor', base + 41, 'INT16', 0.001, ''),
+  reg('temperature_c', 'Internal Temperature', base + 42, 'INT16', 0.1, '°C'),
+  reg('efficiency_pct', 'Conversion Efficiency', base + 43, 'UINT16', 0.01, '%'),
+  reg('daily_energy_kwh', 'Daily Energy', base + 50, 'UINT32', 0.1, 'kWh'),
+  reg('total_energy_kwh', 'Total Energy', base + 52, 'UINT32', 0.1, 'kWh'),
+];
+
+const meterRegs = (base, byte = 'BIG', word = 'BIG') => [
+  reg('voltage_l1_v', 'Voltage L-N L1', base, 'FLOAT32', 1, 'V', { byte, word }),
+  reg('voltage_l2_v', 'Voltage L-N L2', base + 2, 'FLOAT32', 1, 'V', { byte, word }),
+  reg('voltage_l3_v', 'Voltage L-N L3', base + 4, 'FLOAT32', 1, 'V', { byte, word }),
+  reg('current_l1_a', 'Current L1', base + 10, 'FLOAT32', 1, 'A', { byte, word }),
+  reg('current_l2_a', 'Current L2', base + 12, 'FLOAT32', 1, 'A', { byte, word }),
+  reg('current_l3_a', 'Current L3', base + 14, 'FLOAT32', 1, 'A', { byte, word }),
+  reg('active_power_kw', 'Active Power', base + 30, 'FLOAT32', 1, 'kW', { byte, word }),
+  reg('reactive_power_kvar', 'Reactive Power', base + 32, 'FLOAT32', 1, 'kvar', { byte, word }),
+  reg('apparent_power_kva', 'Apparent Power', base + 34, 'FLOAT32', 1, 'kVA', { byte, word }),
+  reg('power_factor', 'Power Factor', base + 36, 'FLOAT32', 1, '', { byte, word }),
+  reg('frequency_hz', 'Frequency', base + 50, 'FLOAT32', 1, 'Hz', { byte, word }),
+  reg('import_kwh', 'Imported Energy', base + 60, 'FLOAT64', 0.001, 'kWh', { byte, word }),
+  reg('export_kwh', 'Exported Energy', base + 64, 'FLOAT64', 0.001, 'kWh', { byte, word }),
+];
+
+export const DEVICE_MODELS = [
+  {
+    key: 'huawei-sun2000-100ktl', manufacturer: 'Huawei', model: 'SUN2000-100KTL-M1',
+    device_type: 'INVERTER', description: 'Three-phase string inverter, 100 kW, Modbus TCP via SmartLogger.',
+    registers: inverterRegs(32000),
+  },
+  {
+    key: 'sungrow-sg110cx', manufacturer: 'Sungrow', model: 'SG110CX',
+    device_type: 'INVERTER', description: '110 kW commercial string inverter, Modbus TCP.',
+    registers: inverterRegs(5000),
+  },
+  {
+    key: 'deye-sun50k', manufacturer: 'Deye', model: 'SUN-50K-SG04LP3',
+    device_type: 'HYBRID_INVERTER', description: '50 kW three-phase hybrid inverter with battery port.',
+    registers: inverterRegs(600),
+  },
+  {
+    key: 'goodwe-et75', manufacturer: 'GoodWe', model: 'GW75K-ET',
+    device_type: 'HYBRID_INVERTER', description: '75 kW hybrid inverter, Modbus TCP (ET series).',
+    registers: inverterRegs(35000),
+  },
+  {
+    key: 'pylontech-us5000', manufacturer: 'Pylontech', model: 'US5000 + SC0500 BMS',
+    device_type: 'BESS', description: 'LFP battery stack with SC0500 BMS gateway (Modbus TCP).',
+    registers: [
+      reg('soc_pct', 'State of Charge', 1000, 'UINT16', 0.1, '%'),
+      reg('soh_pct', 'State of Health', 1001, 'UINT16', 0.1, '%'),
+      reg('voltage_v', 'Battery Voltage', 1002, 'UINT16', 0.1, 'V'),
+      reg('current_a', 'Battery Current', 1003, 'INT16', 0.1, 'A'),
+      reg('power_kw', 'Battery Power', 1004, 'INT32', 0.001, 'kW'),
+      reg('charge_power_kw', 'Charging Power', 1006, 'UINT32', 0.001, 'kW'),
+      reg('discharge_power_kw', 'Discharging Power', 1008, 'UINT32', 0.001, 'kW'),
+      reg('temperature_c', 'Battery Temperature', 1010, 'INT16', 0.1, '°C'),
+      reg('available_kwh', 'Available Charge Energy', 1011, 'UINT16', 0.1, 'kWh'),
+      reg('remaining_kwh', 'Remaining Energy', 1012, 'UINT16', 0.1, 'kWh'),
+      reg('rack_count', 'Rack Count', 1013, 'UINT16', 1, 'count'),
+      reg('bms_status', 'BMS Status Word', 1014, 'UINT16', 1, 'code'),
+    ],
+  },
+  {
+    key: 'pylontech-bms', manufacturer: 'Pylontech', model: 'BMS SC0500',
+    device_type: 'BMS', description: 'Rack-level BMS telemetry.',
+    registers: [
+      reg('soc_pct', 'Stack SOC', 1100, 'UINT16', 0.1, '%'),
+      reg('soh_pct', 'Stack SOH', 1101, 'UINT16', 0.1, '%'),
+      reg('voltage_v', 'Stack Voltage', 1102, 'UINT16', 0.1, 'V'),
+      reg('current_a', 'Stack Current', 1103, 'INT16', 0.1, 'A'),
+      reg('temperature_c', 'Max Cell Temperature', 1104, 'INT16', 0.1, '°C'),
+      reg('bms_status', 'Protection Status', 1105, 'UINT16', 1, 'code'),
+    ],
+  },
+  {
+    key: 'schneider-pm5560', manufacturer: 'Schneider Electric', model: 'PowerLogic PM5560',
+    device_type: 'METER', description: 'Revenue-grade power meter, Modbus TCP.',
+    registers: meterRegs(3000),
+  },
+  {
+    key: 'siemens-pac3220', manufacturer: 'Siemens', model: 'SENTRON PAC3220',
+    device_type: 'METER', description: 'Multifunction power meter, Modbus TCP.',
+    registers: meterRegs(1, 'BIG', 'LITTLE'),
+  },
+  {
+    key: 'comap-inteligen', manufacturer: 'ComAp', model: 'InteliGen NT',
+    device_type: 'GENERATOR', description: 'Genset controller, read-only telemetry.',
+    registers: [
+      reg('running', 'Engine Running', 0, 'BIT', 1, '', { fc: 2, poll: 5 }),
+      reg('status_code', 'Controller Mode', 0, 'UINT16', 1, 'code'),
+      reg('voltage_v', 'Generator Voltage', 10, 'UINT16', 0.1, 'V'),
+      reg('current_a', 'Generator Current', 11, 'UINT16', 0.1, 'A'),
+      reg('frequency_hz', 'Generator Frequency', 12, 'UINT16', 0.01, 'Hz'),
+      reg('power_kw', 'Active Power', 13, 'INT32', 0.001, 'kW'),
+      reg('run_hours', 'Engine Hours', 20, 'UINT32', 0.1, 'h'),
+      reg('fuel_level_pct', 'Fuel Level', 22, 'UINT16', 0.1, '%'),
+      reg('fault_code', 'Failure Code', 23, 'UINT32', 1, 'code'),
+    ],
+  },
+];
+
+export const DEFAULT_ALARM_RULES = [
+  { code: 'BESS_LOW_SOC', parameter_id: 'soc_pct', name: 'Battery state of charge low', severity: 'WARNING', operator: '<', threshold: 25, duration_sec: 60, category: 'BESS' },
+  { code: 'BESS_CRITICAL_SOC', parameter_id: 'soc_pct', name: 'Battery state of charge critical', severity: 'CRITICAL', operator: '<', threshold: 15, duration_sec: 0, category: 'BESS' },
+  { code: 'BESS_HIGH_TEMP', parameter_id: 'battery_temp_c', name: 'Battery temperature high', severity: 'WARNING', operator: '>', threshold: 45, duration_sec: 60, category: 'BESS' },
+  { code: 'BESS_CRITICAL_TEMP', parameter_id: 'battery_temp_c', name: 'Battery temperature critical', severity: 'CRITICAL', operator: '>', threshold: 55, duration_sec: 0, category: 'BESS' },
+  { code: 'GRID_UNDERVOLTAGE', parameter_id: 'grid_voltage_l1_v', name: 'Grid undervoltage', severity: 'WARNING', operator: '<', threshold: 200, duration_sec: 30, category: 'GRID' },
+  { code: 'GRID_OVERVOLTAGE', parameter_id: 'grid_voltage_l1_v', name: 'Grid overvoltage', severity: 'WARNING', operator: '>', threshold: 242, duration_sec: 30, category: 'GRID' },
+  { code: 'GRID_FREQUENCY_DEVIATION', parameter_id: 'grid_frequency_hz', name: 'Grid frequency out of band', severity: 'WARNING', operator: '<', threshold: 49.5, duration_sec: 30, category: 'GRID' },
+  { code: 'INVERTER_HIGH_TEMP', parameter_id: 'inverter_temp_c', name: 'Inverter temperature high', severity: 'WARNING', operator: '>', threshold: 75, duration_sec: 120, category: 'INVERTER' },
+  { code: 'LOAD_OVER_INVERTER', parameter_id: 'load_over_inverter_pct', name: 'Load exceeds inverter capacity', severity: 'WARNING', operator: '>', threshold: 105, duration_sec: 60, category: 'INVERTER' },
+  { code: 'PV_UNDERPERFORM', parameter_id: 'pv_performance_pct', name: 'PV generation below expected', severity: 'WARNING', operator: '<', threshold: 55, duration_sec: 900, category: 'PV' },
+];

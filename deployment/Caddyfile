@@ -1,0 +1,25 @@
+{
+	admin off
+	auto_https disable_redirects
+}
+
+http://{$APP_DOMAIN} {
+	redir https://{$APP_DOMAIN}{uri} permanent
+}
+
+{$APP_DOMAIN} {
+	tls /run/secrets/tls_fullchain.pem /run/secrets/tls_privkey.pem
+	encode zstd gzip
+	header {
+		Strict-Transport-Security "max-age=31536000; includeSubDomains"
+		X-Content-Type-Options nosniff
+		X-Frame-Options DENY
+		Referrer-Policy no-referrer
+		-Server
+	}
+	log {
+		output stdout
+		format json
+	}
+	reverse_proxy app:8080
+}
