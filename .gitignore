@@ -1,5 +1,23 @@
-# Object file
-*.o
-
-# Ada Library Information
-*.ali
+node_modules/
+**/node_modules/
+web/dist/
+data/
+backups/
+deployment/certs/
+.env
+.env.*
+!.env.production.example
+**/*.log
+*.sqlite
+*.sqlite3
+*.db
+*.db-shm
+*.db-wal
+*.pem
+*.key
+*.p12
+*.pfx
+gateway/configs/*.json
+!gateway/configs/demo-site.example.json
+CLEANUP_AUDIT_REPORT.md
+CLEANUP_FINAL_REPORT.md
