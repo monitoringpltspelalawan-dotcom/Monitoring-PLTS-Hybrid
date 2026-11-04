@@ -1,25 +1,22 @@
 name: Publish static dashboard demo
 
-
 on:
   push:
-    branches: [main]
+    branches:
+      - main
     paths:
-      - "github-pages-demo/**"
-      - ".github/workflows/pages-demo.yml"
+      - github-pages-demo/**
+      - .github/workflows/pages-demo.yml
   workflow_dispatch:
-
 
 permissions:
   contents: read
   pages: write
   id-token: write
 
-
 concurrency:
   group: github-pages
   cancel-in-progress: true
-
 
 jobs:
   deploy:
@@ -40,3 +37,4 @@ jobs:
           path: github-pages-demo
       - name: Deploy to GitHub Pages
         id: deployment
+        uses: actions/deploy-pages@v4
