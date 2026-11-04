@@ -2,7 +2,13 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import path from 'node:path';
 
-export default defineConfig({
+export default defineConfig(({ mode }) => {
+  const staticDemo = mode === 'github-pages';
+  return {
+  base: staticDemo ? '/Monitoring-PLTS-Hybrid/' : '/',
+  define: {
+    'import.meta.env.VITE_STATIC_DEMO': JSON.stringify(staticDemo ? 'true' : 'false'),
+  },
   root: path.resolve(__dirname),
   plugins: [react()],
   server: {
@@ -14,7 +20,7 @@ export default defineConfig({
     },
   },
   build: {
-    outDir: 'dist',
+    outDir: staticDemo ? path.resolve(__dirname, '../github-pages-app/site') : 'dist',
     emptyOutDir: true,
     sourcemap: false,
     chunkSizeWarningLimit: 1600,
@@ -28,4 +34,5 @@ export default defineConfig({
       },
     },
   },
+  };
 });

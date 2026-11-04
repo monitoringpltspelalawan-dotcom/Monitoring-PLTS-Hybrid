@@ -1,3 +1,5 @@
+import { demoApi } from './demoApi';
+
 export class ApiError extends Error {
   status: number;
   code: string;
@@ -21,6 +23,10 @@ export function qs(params: Record<string, string | number | boolean | null | und
 }
 
 export async function api<T = any>(path: string, options: Omit<RequestInit, 'body'> & { body?: any } = {}): Promise<T> {
+  if (import.meta.env.VITE_STATIC_DEMO === 'true') {
+    return demoApi<T>(path, options);
+  }
+
   const headers = new Headers(options.headers || {});
   let body = options.body;
   if (body && typeof body !== 'string') {
@@ -50,6 +56,18 @@ export const put = <T = any>(path: string, body?: any) => api<T>(path, { method:
 export const del = <T = any>(path: string) => api<T>(path, { method: 'DELETE' });
 
 export function download(url: string) {
+  if (import.meta.env.VITE_STATIC_DEMO === 'true') {
+    const csv = 'Monitoring PLTS Hybrid — Public visual demo\r\nSynthetic sample data only; no live telemetry.\r\n';
+    const blobUrl = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8' }));
+    const a = document.createElement('a');
+    a.href = blobUrl;
+    a.download = `chsms-demo-${new Date().toISOString().slice(0, 10)}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(blobUrl);
+    return;
+  }
   const a = document.createElement('a');
   a.href = url;
   a.rel = 'noopener';

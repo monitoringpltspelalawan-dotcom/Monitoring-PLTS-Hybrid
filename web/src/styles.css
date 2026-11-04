@@ -448,6 +448,26 @@ svg {
   border-color: rgba(239, 68, 68, 0.35);
   background: rgba(239, 68, 68, 0.1);
 }
+.live-chip.demo {
+  color: #fcd34d;
+  border-color: rgba(245, 158, 11, 0.32);
+  background: rgba(245, 158, 11, 0.09);
+}
+.demo-banner {
+  margin-bottom: 16px;
+  padding: 9px 12px;
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  border-radius: var(--radius-sm);
+  background: rgba(245, 158, 11, 0.08);
+  color: var(--warning);
+  font-size: 11px;
+  line-height: 1.45;
+}
+:root[data-theme="light"] .demo-banner {
+  background: #fff8e6;
+  color: #8a5700;
+  border-color: #ead59e;
+}
 
 .live-dot {
   display: inline-flex;

@@ -150,7 +150,7 @@ export default function Overview() {
       <PageHeader
         eyebrow="Portfolio command centre"
         title="Hybrid solar overview"
-        subtitle={p ? `${p.siteCount} sites · ${num(p.pvCapacityMwp, 2)} MWp PV · ${num(p.bessCapacityMwh, 2)} MWh BESS · ${connected ? 'live stream connected' : 'stream reconnecting'}` : 'Aggregating portfolio telemetry…'}
+        subtitle={p ? `${p.siteCount} sites · ${num(p.pvCapacityMwp, 2)} MWp PV · ${num(p.bessCapacityMwh, 2)} MWh BESS · ${import.meta.env.VITE_STATIC_DEMO === 'true' ? 'synthetic demo stream' : connected ? 'live stream connected' : 'stream reconnecting'}` : 'Aggregating portfolio telemetry…'}
         actions={
           <>
             <Badge color="var(--good)" dot>READ-ONLY MONITORING</Badge>

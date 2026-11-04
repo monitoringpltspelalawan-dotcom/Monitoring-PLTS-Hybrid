@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { useAuth } from './auth';
+import { demoLivePortfolio, demoLiveSites } from './demoApi';
 
 export interface LiveSnapshot {
   siteId: string;
@@ -54,6 +55,16 @@ export function RealtimeProvider({ children }: { children: React.ReactNode }) {
       setSites(new Map());
       setPortfolio(null);
       return;
+    }
+    if (import.meta.env.VITE_STATIC_DEMO === 'true') {
+      const publish = () => {
+        setConnected(true);
+        setPortfolio(demoLivePortfolio());
+        setSites(new Map(demoLiveSites().map((site) => [site.siteId, site])));
+      };
+      publish();
+      const timer = window.setInterval(publish, 5000);
+      return () => window.clearInterval(timer);
     }
     let cancelled = false;
 

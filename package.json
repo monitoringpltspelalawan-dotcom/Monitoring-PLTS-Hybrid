@@ -12,6 +12,7 @@
     "dev:api": "node server/index.js",
     "dev:web": "vite --config web/vite.config.ts",
     "build": "vite build --config web/vite.config.ts",
+    "build:github-pages": "vite build --mode github-pages --config web/vite.config.ts",
     "start": "node server/index.js",
     "seed": "node server/db/seed.js",
     "seed:reset": "node server/db/seed.js --reset",

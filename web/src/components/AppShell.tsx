@@ -118,7 +118,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         </div>
         <div className="side-status">
           <span className={cn('dot', connected ? 'good' : 'bad')} />
-          <span>{connected ? 'Realtime link active' : 'Realtime disconnected'}</span>
+          <span>{import.meta.env.VITE_STATIC_DEMO === 'true' ? 'Synthetic demo data' : connected ? 'Realtime link active' : 'Realtime disconnected'}</span>
           {portfolio && <em>{portfolio.onlineSites}/{portfolio.onlineSites + portfolio.offlineSites}</em>}
         </div>
         <nav className="nav">
@@ -154,8 +154,10 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           <button className="icon-btn mobile-only" onClick={() => setMobile(true)} aria-label="Open navigation"><Menu size={18} /></button>
           <div className="crumb"><span>CHSMS</span><ChevronRight size={13} /><strong>{title}</strong></div>
           <div className="topbar-right">
-            <span className={cn('live-chip', connected ? 'on' : 'off')}>
-              {connected ? <Radio size={12} /> : <WifiOff size={12} />} {connected ? 'LIVE' : 'RETRYING'}
+            <span className={cn('live-chip', import.meta.env.VITE_STATIC_DEMO === 'true' ? 'demo' : connected ? 'on' : 'off')}>
+              {import.meta.env.VITE_STATIC_DEMO === 'true'
+                ? <><WifiOff size={12} /> DEMO</>
+                : connected ? <><Radio size={12} /> LIVE</> : <><WifiOff size={12} /> RETRYING</>}
             </span>
             <span className="clock">{dateTime(new Date().toISOString())}</span>
             <button
@@ -190,7 +192,14 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             </div>
           </div>
         </header>
-        <main className="content">{children}</main>
+        <main className="content">
+          {import.meta.env.VITE_STATIC_DEMO === 'true' && (
+            <div className="demo-banner">
+              Public visual demo · synthetic sample data only · no backend, login, database, MQTT, or live telemetry
+            </div>
+          )}
+          {children}
+        </main>
       </div>
     </div>
   );

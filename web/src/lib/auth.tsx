@@ -1,5 +1,6 @@
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { api } from './api';
+import { demoSiteList } from './demoApi';
 
 export interface UserSite { id: string; code: string; name: string; region_id?: string }
 export interface User {
@@ -18,11 +19,37 @@ interface AuthContextValue {
 
 const AuthContext = createContext<AuthContextValue | null>(null);
 
+const STATIC_DEMO_USER: User = {
+  id: 'public-demo-user',
+  username: 'demo-viewer',
+  fullName: 'Public Demo Viewer',
+  email: 'demo@example.invalid',
+  role: 'SUPER_ADMIN',
+  roleName: 'Public Demo · simulated access',
+  permissions: [
+    'site:view', 'site:manage', 'site:delete', 'analytics:view', 'alarm:view', 'alarm:ack',
+    'alarm:resolve', 'alarm:rule:manage', 'report:view', 'report:generate', 'report:schedule',
+    'gateway:view', 'gateway:manage', 'gateway:delete', 'gateway:token:rotate',
+    'device:view', 'device:manage', 'device:delete', 'modbus:view', 'modbus:manage',
+    'modbus:test', 'user:view', 'user:manage', 'user:delete', 'audit:view',
+    'settings:manage',
+  ],
+  timezone: 'Asia/Jakarta',
+  siteIds: demoSiteList.map((site) => site.id),
+  sites: demoSiteList.map((site) => ({ id: site.id, code: site.code, name: site.name, region_id: site.region_id })),
+};
+
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
+  const staticDemo = import.meta.env.VITE_STATIC_DEMO === 'true';
+  const [user, setUser] = useState<User | null>(staticDemo ? STATIC_DEMO_USER : null);
+  const [loading, setLoading] = useState(!staticDemo);
 
   const refresh = useCallback(async () => {
+    if (staticDemo) {
+      setUser(STATIC_DEMO_USER);
+      setLoading(false);
+      return;
+    }
     try {
       const data = await api<{ user: User }>('/api/auth/me');
       setUser(data.user);
@@ -31,20 +58,25 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [staticDemo]);
 
   useEffect(() => { void refresh(); }, [refresh]);
 
   const login = useCallback(async (username: string, password: string) => {
+    if (staticDemo) {
+      setUser(STATIC_DEMO_USER);
+      return;
+    }
     const data = await api<{ user: User }>('/api/auth/login', { method: 'POST', body: { username, password } });
     setUser(data.user);
-  }, []);
+  }, [staticDemo]);
 
   const logout = useCallback(async () => {
+    if (staticDemo) return;
     try { await api('/api/auth/logout', { method: 'POST' }); } catch { /* ignore */ }
     setUser(null);
     window.location.href = '/login';
-  }, []);
+  }, [staticDemo]);
 
   const has = useCallback((permission: string) => Boolean(user?.permissions?.includes(permission)), [user]);
 

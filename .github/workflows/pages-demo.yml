@@ -1,11 +1,14 @@
-name: Publish static dashboard demo
+name: Publish Monitoring PLTS public demo
 
 on:
   push:
     branches:
       - main
     paths:
-      - github-pages-demo/**
+      - github-pages-app/**
+      - web/**
+      - package.json
+      - package-lock.json
       - .github/workflows/pages-demo.yml
   workflow_dispatch:
 
@@ -27,14 +30,23 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+      - name: Build static public demo
+        run: npm run build:github-pages
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
         with:
           enablement: true
-      - name: Upload static demo only
+      - name: Upload static application demo only
         uses: actions/upload-pages-artifact@v3
         with:
-          path: github-pages-demo
+          path: github-pages-app/site
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4

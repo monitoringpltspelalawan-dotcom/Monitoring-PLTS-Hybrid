@@ -3,14 +3,20 @@
 Repository ini berisi source aplikasi monitoring hybrid solar, konfigurasi
 deployment, pengujian, dan demo visual statis.
 
-## GitHub Pages demo
+## GitHub Pages application demo
 
-Demo di [`github-pages-demo/`](./github-pages-demo/) menggunakan data contoh
-sintetis. GitHub Pages hanya menyajikan file statis; demo tidak menjalankan
-backend, autentikasi, database, MQTT, atau telemetry live. Jangan gunakan
-sebagai sistem operasional atau untuk keputusan keselamatan.
+GitHub Pages menjalankan seluruh layar antarmuka web menggunakan data contoh
+sintetis yang dibuat di browser. Workflow membangun dashboard dari source
+`web/` dan menerbitkan hasil statis di [`github-pages-app/site/`](./github-pages-app/site/).
+[`github-pages-demo/`](./github-pages-demo/) tetap tersedia sebagai ringkasan
+visual mandiri.
 
 Demo: https://monitoringpltspelalawan-dotcom.github.io/Monitoring-PLTS-Hybrid/
+
+Filter dan navigasi layar bekerja di browser. GitHub Pages tidak menjalankan
+backend, autentikasi sungguhan, database, MQTT, koneksi perangkat, atau
+telemetry live; tindakan administratif hanya simulasi lokal. Jangan gunakan
+sebagai sistem operasional atau untuk keputusan keselamatan.
 
 ## Menjalankan aplikasi lokal
 
@@ -33,5 +39,5 @@ atau data operasional. Aturan `.gitignore` mengecualikan lokasi data lokal dan
 file rahasia umum; tetap tinjau file yang akan di-commit.
 
 Source dan konfigurasi deployment di repository bukan bukti aplikasi telah
-di-deploy. GitHub Pages hanya berisi demo statis; layanan backend, PostgreSQL,
+di-deploy. GitHub Pages hanya berisi antarmuka statis dengan data sintetis; layanan backend, PostgreSQL,
 MQTT/TLS, domain, dan telemetry nyata belum dinyatakan live.

@@ -5,32 +5,34 @@ No domain, VPS, TLS certificate, production database, gateway connectivity, or
 public application access has been verified. Do not treat the development
 preview or the demo simulator as a live monitoring system.
 
-## GitHub Pages visual demo (static only)
+## GitHub Pages interface demo (static only)
 
-The `github-pages-demo/` directory is a separate, standalone dashboard
-showcase. It uses synthetic sample values and does not include the application
-bundle, login, API, database, MQTT, gateways, or live telemetry. The GitHub
-Actions workflow publishes only that directory; it does not deploy this
-full-stack application.
+The GitHub Actions workflow builds the existing React application screens and
+publishes the resulting static bundle in `github-pages-app/site/`. Browser
+navigation, filters, charts, and synthetic sample datasets are available
+without a server. `github-pages-demo/` remains a separate single-page visual
+overview.
+
+GitHub Pages cannot run the API, real authentication, PostgreSQL, MQTT,
+gateways, device connectivity, or live telemetry. This is a public visual demo
+only; administrative actions are simulated in the browser and do not persist
+to a backend.
 
 To publish the visual demo:
 
-1. Create a GitHub repository. Public visibility makes the source code public;
-   review it before upload and never add `.env`, database files, certificates,
-   gateway tokens, or other secrets. The root `.gitignore` excludes common
-   local data and secret paths.
-2. Add and push the project source to the repository's `main` branch using
-   GitHub Desktop or Git. Do not upload `node_modules/` or `data/`.
-3. In the repository settings, open **Pages** and set the build/deployment
-   source to **GitHub Actions**.
-4. Push a change under `github-pages-demo/`, or manually run the
-   **Publish static dashboard demo** workflow from the Actions tab.
-5. After the workflow succeeds, open the Pages URL shown in the workflow
+1. Review the public repository and never add `.env`, database files,
+   certificates, gateway tokens, or other secrets. The root `.gitignore`
+   excludes common local data and secret paths.
+2. Ensure the repository's Pages source is **GitHub Actions**.
+3. Push changes to `web/`, `package.json`, `package-lock.json`, or
+   `github-pages-app/`, or manually run the **Publish Monitoring PLTS public
+   demo** workflow from the Actions tab.
+4. After the workflow succeeds, open the Pages URL shown in the workflow
    summary (normally `https://<owner>.github.io/<repository>/`).
 
-The result is a public static visual demo, not an online instance of CHSMS.
+The result is a public static interface demo, not an online instance of CHSMS.
 The production Docker/VPS instructions below are required for API, PostgreSQL,
-HTTPS, MQTT/TLS, user accounts, and real gateway telemetry.
+HTTPS, MQTT/TLS, real user accounts, and gateway telemetry.
 
 ## Deployment states
 

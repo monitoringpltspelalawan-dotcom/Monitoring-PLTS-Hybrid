@@ -33,9 +33,9 @@ function Protected({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
-  return (
+  const routes = (
     <Routes>
-      <Route path="/login" element={<Login />} />
+      <Route path="/login" element={import.meta.env.VITE_STATIC_DEMO === 'true' ? <Navigate to="/" replace /> : <Login />} />
       <Route path="/" element={<Protected><Overview /></Protected>} />
       <Route path="/map" element={<Protected><LiveMap /></Protected>} />
       <Route path="/sites" element={<Protected><Sites /></Protected>} />
@@ -58,4 +58,5 @@ export default function App() {
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
+  return routes;
 }
