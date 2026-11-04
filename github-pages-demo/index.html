@@ -1,0 +1,252 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#07111c">
+  <meta name="description" content="Static visual demo of a hybrid solar monitoring dashboard. All values are synthetic.">
+  <title>Hybrid Solar Monitoring — Static Demo</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --page: #07111c;
+      --side: #091827;
+      --panel: #0c1b2b;
+      --panel2: #102238;
+      --line: #1b3045;
+      --text: #e7f2fc;
+      --muted: #8ca2b8;
+      --faint: #617991;
+      --blue: #249cff;
+      --green: #2bd47b;
+      --yellow: #f5ad25;
+      --red: #ef5964;
+      --purple: #a77bff;
+      --cyan: #3bc9ee;
+    }
+    :root[data-theme="light"] {
+      color-scheme: light;
+      --page: #edf3f8;
+      --side: #f8fbfd;
+      --panel: #fff;
+      --panel2: #f2f7fb;
+      --line: #d7e2ec;
+      --text: #182b3f;
+      --muted: #5e748a;
+      --faint: #8297aa;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-width: 320px;
+      background: var(--page);
+      color: var(--text);
+      font: 13px/1.45 Inter, "Segoe UI", system-ui, sans-serif;
+    }
+    button { font: inherit; }
+    .layout { min-height: 100vh; display: grid; grid-template-columns: 196px minmax(0, 1fr); }
+    .sidebar {
+      position: sticky; top: 0; height: 100vh; padding: 18px 12px;
+      background: var(--side); border-right: 1px solid var(--line);
+    }
+    .brand { display: flex; align-items: center; gap: 10px; padding: 4px 8px 20px; }
+    .brand-mark { width: 35px; height: 35px; display: grid; place-items: center; border-radius: 10px; background: linear-gradient(145deg,#ffd050,#f38e17); color: #15283b; font-size: 19px; }
+    .brand strong, .brand small { display: block; }
+    .brand strong { font-size: 13px; }
+    .brand small { color: var(--muted); font-size: 9px; }
+    .nav-label { margin: 19px 8px 7px; color: var(--faint); font-size: 8px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; }
+    .nav-item { display: flex; gap: 9px; align-items: center; padding: 8px 9px; margin: 2px 0; color: var(--muted); border-radius: 7px; font-size: 10px; }
+    .nav-item.active { background: linear-gradient(90deg,rgba(36,156,255,.2),rgba(36,156,255,.04)); color: var(--text); box-shadow: inset 2px 0 #249cff; }
+    .nav-item span:first-child { width: 15px; color: #7e9ab5; text-align: center; }
+    .sidebar-foot { position: absolute; left: 20px; right: 12px; bottom: 20px; padding-top: 12px; border-top: 1px solid var(--line); color: var(--green); font-size: 10px; }
+    .sidebar-foot small { display: block; color: var(--muted); }
+    main { min-width: 0; }
+    .topbar { height: 54px; display: flex; align-items: center; gap: 10px; padding: 0 20px; border-bottom: 1px solid var(--line); background: var(--side); }
+    .crumb { color: var(--muted); font-size: 10px; }
+    .top-actions { display: flex; align-items: center; gap: 12px; margin-left: auto; }
+    .live { padding: 4px 9px; border: 1px solid rgba(43,212,123,.25); border-radius: 30px; background: rgba(43,212,123,.08); color: var(--green); font-size: 8px; font-weight: 800; letter-spacing: .08em; }
+    .admin { color: var(--muted); font-size: 10px; }
+    .theme-btn { width: 30px; height: 30px; border: 1px solid var(--line); border-radius: 7px; background: var(--panel); color: var(--text); cursor: pointer; }
+    .content { width: min(1540px,100%); margin: auto; padding: 17px 19px 30px; }
+    .notice { margin-bottom: 12px; padding: 7px 10px; border: 1px solid rgba(245,173,37,.28); border-radius: 7px; background: rgba(245,173,37,.08); color: var(--yellow); font-size: 9px; }
+    .heading { display: flex; align-items: center; justify-content: space-between; gap: 14px; margin-bottom: 13px; }
+    .eyebrow { color: var(--cyan); font-size: 8px; font-weight: 800; letter-spacing: .18em; text-transform: uppercase; }
+    h1 { margin: 3px 0; font-size: 21px; letter-spacing: -.025em; }
+    .subtitle { color: var(--muted); font-size: 10px; }
+    .readonly { padding: 6px 9px; border: 1px solid rgba(43,212,123,.2); border-radius: 20px; color: var(--green); font-size: 8px; font-weight: 800; white-space: nowrap; }
+    .kpis { display: grid; grid-template-columns: repeat(6,minmax(0,1fr)); gap: 8px; margin-bottom: 10px; }
+    .card { min-width: 0; border: 1px solid var(--line); border-radius: 9px; background: var(--panel); overflow: hidden; }
+    .kpi { position: relative; min-height: 84px; padding: 10px 11px; }
+    .kpi:before { content:""; position:absolute; top:10px; bottom:10px; left:0; width:2px; background:var(--tone); }
+    .kpi-top { display:flex; align-items:center; justify-content:space-between; color:var(--muted); font-size:8px; }
+    .kpi-icon { display:grid; place-items:center; width:24px; height:24px; border-radius:7px; background:color-mix(in srgb,var(--tone) 14%,transparent); color:var(--tone); font-size:13px; }
+    .value { margin-top:5px; font:700 19px/1.1 "Cascadia Mono",Consolas,monospace; }
+    .unit { margin-left:4px; color:var(--muted); font:600 9px Inter,"Segoe UI",sans-serif; }
+    .kpi small { display:block; margin-top:5px; color:var(--faint); font-size:8px; }
+    .primary { display:grid; grid-template-columns:minmax(0,.95fr) minmax(0,1.05fr); gap:10px; margin-bottom:10px; }
+    .card-head { min-height:42px; display:flex; align-items:center; justify-content:space-between; gap:8px; padding:8px 10px; border-bottom:1px solid var(--line); background:var(--panel2); }
+    .card-head strong { display:block; font-size:10px; }
+    .card-head small { display:block; margin-top:2px; color:var(--muted); font-size:8px; }
+    .card-body { padding:9px; }
+    .flow { display:block; width:100%; min-height:210px; border:1px solid var(--line); border-radius:6px; background:linear-gradient(150deg,var(--panel2),var(--panel)); }
+    .map { display:block; width:100%; height:100%; min-height:210px; background:#0b2233; }
+    .land { fill:#18415b; stroke:#2b5b75; stroke-width:1; }
+    .marker { stroke:#081521; stroke-width:2; }
+    .map-wrap { position:relative; }
+    .map-key { position:absolute; top:8px; right:8px; display:grid; gap:4px; padding:8px; border:1px solid #335268; border-radius:7px; background:rgba(7,17,28,.9); color:#d5e5f2; font-size:7px; }
+    .map-key b { margin-left:10px; float:right; }
+    .details { display:grid; grid-template-columns:1.04fr 1.12fr .86fr .96fr; gap:9px; margin-bottom:10px; }
+    .soc-wrap { min-height:145px; display:flex; align-items:center; justify-content:space-evenly; gap:10px; }
+    .soc-ring { width:94px; height:94px; display:grid; place-items:center; flex:none; border-radius:50%; background:conic-gradient(var(--green) 0 92%,#22364a 92%); }
+    .soc-inner { width:73px; height:73px; display:grid; place-content:center; text-align:center; border-radius:50%; background:var(--panel); }
+    .soc-inner b { font-size:17px; }
+    .soc-inner small { color:var(--muted); font-size:7px; }
+    .metrics { display:grid; gap:10px; color:var(--muted); font-size:8px; }
+    .metrics b { float:right; margin-left:8px; color:var(--text); font-family:Consolas,monospace; }
+    .trend { width:100%; height:128px; }
+    .status-list { display:grid; gap:10px; min-height:145px; align-content:center; padding:5px 2px; }
+    .status-row { display:flex; align-items:center; gap:7px; color:var(--muted); font-size:8px; }
+    .status-row b { margin-left:auto; color:var(--text); }
+    .dot { width:7px; height:7px; border-radius:50%; background:var(--green); }
+    .alarms { display:grid; gap:0; }
+    .alarm { display:grid; grid-template-columns:7px 45px minmax(0,1fr) auto; align-items:center; gap:6px; padding:10px 1px; border-bottom:1px solid var(--line); font-size:7px; }
+    .alarm:last-child { border-bottom:0; }
+    .alarm b { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+    .sev { color:var(--red); font-size:6px; font-weight:800; }
+    .alarm time { color:var(--faint); }
+    .bottom { display:grid; grid-template-columns:1.12fr .9fr .86fr; gap:9px; }
+    .rank { display:grid; grid-template-columns:18px minmax(0,1fr) minmax(50px,.8fr) auto; align-items:center; gap:7px; padding:7px 0; color:var(--muted); font-size:8px; }
+    .rank strong { color:var(--text); }
+    .bar { height:5px; border-radius:9px; background:#263b50; overflow:hidden; }
+    .bar i { display:block; height:100%; border-radius:inherit; background:var(--green); }
+    .mix { min-height:135px; display:flex; align-items:center; justify-content:space-evenly; gap:10px; }
+    .donut { width:90px; height:90px; display:grid; place-items:center; border-radius:50%; background:conic-gradient(#188fff 0 74%,#13ca81 74% 86%,#ffb21f 86% 95%,#fa713c 95%); }
+    .donut div { width:63px; height:63px; display:grid; place-content:center; text-align:center; border-radius:50%; background:var(--panel); }
+    .donut b { font-size:13px; }
+    .donut small { color:var(--muted); font-size:7px; }
+    .legend { display:grid; gap:8px; color:var(--muted); font-size:8px; }
+    .legend i { display:inline-block; width:7px; height:7px; margin-right:5px; border-radius:50%; }
+    .legend b { margin-left:6px; color:var(--text); }
+    .quick { display:grid; grid-template-columns:1fr 1fr; gap:7px; padding:10px; }
+    .quick div { display:grid; place-items:center; gap:5px; min-height:48px; border:1px solid var(--line); border-radius:7px; background:var(--panel2); color:var(--blue); font-size:8px; text-align:center; }
+    .footer { margin-top:11px; color:var(--faint); font-size:8px; text-align:right; }
+    :root[data-theme="light"] .map { background:#e9f2f7; }
+    :root[data-theme="light"] .land { fill:#c4dce9; stroke:#a4c4d5; }
+    :root[data-theme="light"] .map-key { border-color:#c5d3e1; background:rgba(255,255,255,.94); color:#344b63; }
+    :root[data-theme="light"] .bar { background:#dce6ee; }
+    @media (max-width:1120px) {
+      .kpis { grid-template-columns:repeat(3,minmax(0,1fr)); }
+      .details { grid-template-columns:repeat(2,minmax(0,1fr)); }
+      .bottom { grid-template-columns:repeat(2,minmax(0,1fr)); }
+    }
+    @media (max-width:760px) {
+      .layout { grid-template-columns:1fr; }
+      .sidebar { display:none; }
+      .topbar { height:48px; padding:0 12px; }
+      .content { padding:13px 11px 22px; }
+      .primary { grid-template-columns:1fr; }
+      .kpis { grid-template-columns:repeat(2,minmax(0,1fr)); }
+      .bottom { grid-template-columns:1fr; }
+      .heading { align-items:flex-start; }
+      h1 { font-size:18px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="brand"><div class="brand-mark">☀</div><div><strong>Hybrid Solar</strong><small>Monitoring System</small></div></div>
+      <div class="nav-item active"><span>⌂</span>Overview</div>
+      <div class="nav-label">Monitoring</div>
+      <div class="nav-item active"><span>▦</span>Overview</div>
+      <div class="nav-item"><span>▣</span>Live Map</div>
+      <div class="nav-item"><span>▤</span>Sites</div>
+      <div class="nav-label">Performance</div>
+      <div class="nav-item"><span>⌁</span>Energy Analytics</div>
+      <div class="nav-item"><span>☼</span>PV Performance</div>
+      <div class="nav-item"><span>▣</span>BESS Analytics</div>
+      <div class="nav-item"><span>⌁</span>Grid & Generator</div>
+      <div class="nav-label">Operations</div>
+      <div class="nav-item"><span>♧</span>Alarms</div>
+      <div class="nav-item"><span>▤</span>Reports</div>
+      <div class="sidebar-foot">● DEMO SYSTEM<small>synthetic sample data</small></div>
+    </aside>
+    <main>
+      <header class="topbar"><div class="crumb">CHSMS&nbsp; › &nbsp;Overview</div><div class="top-actions"><span class="live">● DEMO</span><button class="theme-btn" id="theme" aria-label="Switch to light theme" title="Switch theme">☼</button><span class="admin">Admin&nbsp; ▾</span></div></header>
+      <div class="content">
+        <div class="notice"><strong>STATIC DEMO</strong> — Illustrative synthetic values only. No account, API, backend, database, MQTT connection, or live telemetry.</div>
+        <section class="heading"><div><div class="eyebrow">Portfolio command centre</div><h1>Hybrid solar overview</h1><div class="subtitle">22 sample sites · 4.07 MWp PV · 6.89 MWh BESS · synthetic preview</div></div><div class="readonly">● READ-ONLY DEMO</div></section>
+        <section class="kpis">
+          <article class="card kpi" style="--tone:#ffb21f"><div class="kpi-top">TOTAL PV POWER <span class="kpi-icon">▤</span></div><div class="value">2.15<span class="unit">MW</span></div><small>4.07 MWp installed · sample</small></article>
+          <article class="card kpi" style="--tone:#ffb21f"><div class="kpi-top">PV ENERGY TODAY <span class="kpi-icon">ϟ</span></div><div class="value">18.75<span class="unit">MWh</span></div><small>Illustrative daily generation</small></article>
+          <article class="card kpi" style="--tone:#2bd47b"><div class="kpi-top">AVG. BATTERY SOC <span class="kpi-icon">▣</span></div><div class="value">92.4<span class="unit">%</span></div><small>6.89 MWh installed capacity</small></article>
+          <article class="card kpi" style="--tone:#a77bff"><div class="kpi-top">TOTAL LOAD <span class="kpi-icon">▥</span></div><div class="value">1.98<span class="unit">MW</span></div><small>Sample portfolio load</small></article>
+          <article class="card kpi" style="--tone:#ff9e22"><div class="kpi-top">PLN POWER <span class="kpi-icon">ϟ</span></div><div class="value">0.32<span class="unit">MW</span></div><small>Sample grid import</small></article>
+          <article class="card kpi" style="--tone:#93a6bc"><div class="kpi-top">GENERATOR <span class="kpi-icon">▣</span></div><div class="value">0.00<span class="unit">MW</span></div><small>Sample output</small></article>
+        </section>
+        <section class="primary">
+          <article class="card">
+            <header class="card-head"><div><strong>⚡ Energy flow</strong><small>Synthetic portfolio sample · not live</small></div><span class="live">DEMO</span></header>
+            <div class="card-body">
+              <svg class="flow" viewBox="0 0 700 300" role="img" aria-label="Illustrative solar, battery, grid, generator and load energy flow">
+                <defs><linearGradient id="wire"><stop stop-color="#f5ad25"/><stop offset=".55" stop-color="#29d27a"/><stop offset="1" stop-color="#dbe8f5"/></linearGradient></defs>
+                <path d="M170 68 C245 68 260 140 320 150 M170 150 H320 M170 235 C250 235 262 170 320 155 M385 220 V165 M385 150 H535" fill="none" stroke="url(#wire)" stroke-width="3" stroke-dasharray="7 7"/>
+                <g font-family="Segoe UI, sans-serif">
+                  <g><rect x="22" y="38" width="148" height="58" rx="8" fill="#102238" stroke="#f5ad25"/><text x="35" y="58" fill="#f5ad25" font-size="10">☀ SOLAR PV</text><text x="35" y="80" fill="#e7f2fc" font-size="17" font-weight="700">2.15 MW</text></g>
+                  <g><rect x="22" y="121" width="148" height="58" rx="8" fill="#102238" stroke="#ef5964"/><text x="35" y="141" fill="#ef5964" font-size="10">ϟ PLN GRID</text><text x="35" y="163" fill="#e7f2fc" font-size="17" font-weight="700">320 kW</text></g>
+                  <g><rect x="22" y="204" width="148" height="58" rx="8" fill="#102238" stroke="#fb923c"/><text x="35" y="224" fill="#fb923c" font-size="10">⚙ GENERATOR</text><text x="35" y="246" fill="#e7f2fc" font-size="17" font-weight="700">0 kW</text></g>
+                  <circle cx="345" cy="150" r="13" fill="#102238" stroke="#3bc9ee" stroke-width="3"/><circle cx="345" cy="150" r="4" fill="#3bc9ee"/>
+                  <g><rect x="315" y="220" width="140" height="52" rx="8" fill="#102238" stroke="#a77bff"/><text x="328" y="240" fill="#a77bff" font-size="10">▤ BESS</text><text x="328" y="260" fill="#e7f2fc" font-size="16" font-weight="700">1.20 MW</text></g>
+                  <g><rect x="535" y="121" width="145" height="58" rx="8" fill="#102238" stroke="#dbe8f5"/><text x="548" y="141" fill="#dbe8f5" font-size="10">⌂ PLANT LOAD</text><text x="548" y="163" fill="#e7f2fc" font-size="17" font-weight="700">1.98 MW</text></g>
+                </g>
+              </svg>
+            </div>
+          </article>
+          <article class="card">
+            <header class="card-head"><div><strong>📍 Site overview</strong><small>Illustrative Indonesia map · sample markers</small></div><span class="live">22 DEMO SITES</span></header>
+            <div class="map-wrap">
+              <svg class="map" viewBox="0 0 700 300" role="img" aria-label="Illustrative map of Indonesia with synthetic site markers">
+                <path class="land" d="M40 104l30-13 25 6 14 15-13 14-26-3-15 9-17-10zm90 62 37-18 25 5 5 15-27 13-38 4-13-9zm54 26 39-5 25 9 23 7 28-2 16 11-27 10-29-7-31 6-29-13-26 3-10-10zm140-62 34-21 45 4 25 15-17 17-44 4-33-8zm151 20 34-14 40 7 28 18-21 16-43-6-35-9zm142 30 28-11 38 14-12 15-38-2z"/>
+                <path d="M30 150H675M350 25V275" stroke="#62b4df" stroke-opacity=".12" stroke-dasharray="3 7"/>
+                <g fill="#2bd47b" class="marker"><circle cx="65" cy="110" r="6"/><circle cx="109" cy="112" r="6"/><circle cx="157" cy="171" r="6"/><circle cx="194" cy="188" r="6"/><circle cx="221" cy="204" r="6"/><circle cx="251" cy="211" r="6"/><circle cx="286" cy="208" r="6"/><circle cx="352" cy="138" r="6"/><circle cx="397" cy="145" r="6"/><circle cx="472" cy="147" r="6"/><circle cx="549" cy="177" r="6"/><circle cx="614" cy="189" r="6"/></g>
+                <g fill="#f5ad25" class="marker"><circle cx="184" cy="181" r="6"/><circle cx="321" cy="203" r="6"/><circle cx="445" cy="139" r="6"/><circle cx="584" cy="169" r="6"/></g>
+                <g fill="#ef5964" class="marker"><circle cx="139" cy="159" r="6"/><circle cx="236" cy="209" r="6"/></g>
+              </svg>
+              <div class="map-key"><span>● ONLINE <b>20</b></span><span style="color:#f5ad25">● WARNING <b>1</b></span><span style="color:#ef5964">● OFFLINE <b>1</b></span></div>
+            </div>
+          </article>
+        </section>
+        <section class="details">
+          <article class="card"><header class="card-head"><div><strong>Battery SOC</strong><small>Synthetic portfolio average</small></div></header><div class="card-body soc-wrap"><div class="soc-ring"><div class="soc-inner"><b>92.4%</b><small>AVERAGE SOC</small></div></div><div class="metrics"><span>⚡ Battery power <b>+520 kW</b></span><span>ϟ Battery voltage <b>713 V</b></span><span>🌡 Battery temp <b>32 °C</b></span><span>▣ Available energy <b>2.8 MWh</b></span></div></div></article>
+          <article class="card"><header class="card-head"><div><strong>PV generation trend</strong><small>Illustrative daily profile</small></div><span class="live">1D</span></header><div class="card-body"><svg class="trend" viewBox="0 0 360 135" role="img" aria-label="Illustrative solar generation chart"><path d="M25 112 C60 100 74 75 110 64 S170 42 204 55 255 78 282 88 325 109 346 116 L346 122 L25 122Z" fill="#1eabff" fill-opacity=".15"/><path d="M25 112 C60 100 74 75 110 64 S170 42 204 55 255 78 282 88 325 109 346 116" fill="none" stroke="#188fff" stroke-width="3"/><path d="M25 118 C70 110 87 90 125 82 S184 71 216 77 275 95 306 105 330 115 346 118" fill="none" stroke="#22d481" stroke-width="2"/><path d="M25 30H346M25 70H346M25 110H346" stroke="#91a8bd" stroke-opacity=".16" stroke-dasharray="3 5"/><g fill="#8ca2b8" font-size="8"><text x="22" y="132">06:00</text><text x="104" y="132">09:00</text><text x="184" y="132">12:00</text><text x="264" y="132">15:00</text><text x="326" y="132">18:00</text></g></svg></div></article>
+          <article class="card"><header class="card-head"><div><strong>System status</strong><small>Illustrative sample counts</small></div><span class="live">DEMO</span></header><div class="card-body status-list"><div class="status-row"><i class="dot"></i>PV system <b>Normal</b></div><div class="status-row"><i class="dot"></i>Inverter <b>Normal</b></div><div class="status-row"><i class="dot" style="background:#f5ad25"></i>BESS <b>Charging</b></div><div class="status-row"><i class="dot"></i>Grid (PLN) <b>Available</b></div><div class="status-row"><i class="dot"></i>Communications <b>Sample only</b></div></div></article>
+          <article class="card"><header class="card-head"><div><strong>Active alarms</strong><small>Example events only</small></div><span class="live">2 DEMO</span></header><div class="card-body alarms"><div class="alarm"><i class="dot" style="background:#ef5964"></i><span class="sev">CRITICAL</span><b>Battery temperature high</b><time>14:20</time></div><div class="alarm"><i class="dot" style="background:#f5ad25"></i><span class="sev" style="color:#f5ad25">WARNING</span><b>PV output fluctuation</b><time>13:50</time></div></div></article>
+        </section>
+        <section class="bottom">
+          <article class="card"><header class="card-head"><div><strong>Top sites performance</strong><small>Synthetic daily PV yield</small></div></header><div class="card-body"><div class="rank"><strong>1</strong><span>PLTS Pelalawan</span><span class="bar"><i style="width:92%"></i></span><b>98.7%</b></div><div class="rank"><strong>2</strong><span>PLTS Dumai</span><span class="bar"><i style="width:85%"></i></span><b>97.3%</b></div><div class="rank"><strong>3</strong><span>PLTS Pekanbaru</span><span class="bar"><i style="width:79%"></i></span><b>96.1%</b></div></div></article>
+          <article class="card"><header class="card-head"><div><strong>Energy contribution</strong><small>Sample renewable mix</small></div></header><div class="card-body mix"><div class="donut"><div><b>73.5%</b><small>RENEWABLE</small></div></div><div class="legend"><span><i style="background:#188fff"></i>Solar PV <b>73.5%</b></span><span><i style="background:#13ca81"></i>Battery <b>12.8%</b></span><span><i style="background:#ffb21f"></i>PLN <b>9.1%</b></span><span><i style="background:#fa713c"></i>Generator <b>4.6%</b></span></div></div></article>
+          <article class="card"><header class="card-head"><div><strong>Quick access</strong><small>Preview shortcuts</small></div></header><div class="quick"><div>▥<span>Energy Analytics</span></div><div>▤<span>Reports</span></div><div>⌖<span>Site Map</span></div><div>⚙<span>Settings</span></div></div></article>
+        </section>
+        <footer class="footer">Standalone GitHub Pages showcase · synthetic data · not connected to a backend</footer>
+      </div>
+    </main>
+  </div>
+  <script>
+    const root = document.documentElement;
+    const toggle = document.getElementById('theme');
+    const storedTheme = localStorage.getItem('chsms-demo-theme');
+    if (storedTheme === 'light' || storedTheme === 'dark') root.dataset.theme = storedTheme;
+    function updateToggle() {
+      const light = root.dataset.theme === 'light';
+      toggle.textContent = light ? '☾' : '☼';
+      toggle.setAttribute('aria-label', `Switch to ${light ? 'dark' : 'light'} theme`);
+    }
+    toggle.addEventListener('click', () => {
+      root.dataset.theme = root.dataset.theme === 'light' ? 'dark' : 'light';
+      localStorage.setItem('chsms-demo-theme', root.dataset.theme);
+      updateToggle();
+    });
+    updateToggle();
+  </script>
+</body>
+</html>
